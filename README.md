@@ -41,7 +41,7 @@ Our frontend consumes the following APIs:
 All APIs are accessed via **GET** requests and return **JSON** representations.
 
 
-## ✨ Features
+## Features
 
 * Fully animated cosmic UI
 * Visual theme (Galactic Storm)
@@ -52,7 +52,7 @@ All APIs are accessed via **GET** requests and return **JSON** representations.
 * Light glass morphism UI panels
 
 
-## 🛰️ REST Principles Demonstrated
+## REST Principles Demonstrated
 
 Our frontend illustrates key REST concepts:
 
