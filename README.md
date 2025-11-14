@@ -1,4 +1,4 @@
-# 🌌🚀 NASA Explorer (RESTful)
+# 🌌 NASA Explorer (RESTful)
 
 ## Group Members
 
