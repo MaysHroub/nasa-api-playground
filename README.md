@@ -1,7 +1,7 @@
 #  NASA Explorer (RESTful)
 
 <p align="center">
-  <img src="nasa" width="1254">
+  <img src="nasa" width="1024">
 </p>
 
 
