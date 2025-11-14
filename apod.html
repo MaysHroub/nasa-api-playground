@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>APOD — Astronomy Picture of the Day</title>
+  <link rel="stylesheet" href="css/galactic.css">
+</head>
+<body class="page apod">
+  <div class="space-ambient">
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="glow-orbit"></div>
+  </div>
+  <div class="nebula"></div>
+  
+  <header class="mast">
+    <div class="logo">NASA Explorer</div>
+    <nav class="space-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="apod.html" class="active">APOD</a></li>
+        <li><a href="mars.html">Mars</a></li>
+        <!-- <li><a href="epic.html">EPIC</a></li> -->
+        <li><a href="neows.html">NeoWs</a></li>
+        <li><a href="donki.html">DONKI</a></li>
+        <li><a href="eonet.html">EONET</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="tech.html">Tech</a></li>
+        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
+      </ul>
+    </nav>
+  </header>
+  <main class="content">
+    <section class="panel">
+      <h2>Astronomy Picture of the Day</h2>
+      <p class="desc">Select a date and fetch the Astronomy Picture of the Day from NASA's API. Toggle HD to get high-resolution images when available.</p>
+      
+      <div class="controls">
+        <div class="control-group">
+          <label for="apod-date">Date:</label>
+          <input type="date" id="apod-date" max="2025-11-14">
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="hd-toggle" checked>
+          <label for="hd-toggle">High Definition</label>
+        </div>
+        <button class="fetch-btn" onclick="loadAPOD()">Fetch APOD</button>
+      </div>
+
+      <div id="status"></div>
+
+      <div class="media-card" id="media-container" style="display:none;">
+        <img src="" alt="APOD">
+        <div class="meta">
+          <h3 class="title">title</h3>
+          <p class="date"></p>
+          <p class="explain"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="foot">APOD • Data: NASA API • UI Prototype</footer>
+  <script>
+    const API_KEY = "FdEbrFcvSp6ewQDpxTgaEDEIgNSDx6epfOIcJuAA";
+    
+    // Set today's date as default
+    const dateInput = document.getElementById("apod-date");
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    
+    // Add event listeners for better interaction
+    dateInput.addEventListener('change', function() {
+      console.log('Date changed to:', this.value);
+    });
+    
+    document.getElementById('hd-toggle').addEventListener('change', function() {
+      console.log('HD toggle:', this.checked);
+    });
+    
+    async function loadAPOD() {
+      const date = dateInput.value;
+      const hd = document.getElementById("hd-toggle").checked;
+      const statusDiv = document.getElementById("status");
+      const mediaContainer = document.getElementById("media-container");
+      
+      console.log('Fetching APOD for date:', date, 'HD:', hd);
+      
+      // Build URL with query parameters
+      let url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`;
+      if (date) {
+        url += `&date=${date}`;
+      }
+      if (hd) {
+        url += `&thumbs=true`;
+      }
+      
+      try {
+        statusDiv.innerHTML = '<p class="loading">Loading APOD data...</p>';
+        mediaContainer.style.display = 'none';
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("APOD Data:", data);
+        
+        statusDiv.innerHTML = '';
+        mediaContainer.style.display = 'block';
+        
+        // Handle media content
+        const mediaCard = document.querySelector(".media-card");
+        const existingMedia = mediaCard.querySelector("img, iframe");
+        
+        if (data.media_type === "image") {
+          const imgUrl = hd && data.hdurl ? data.hdurl : data.url;
+          
+          if (existingMedia.tagName === "IFRAME") {
+            const img = document.createElement("img");
+            existingMedia.replaceWith(img);
+          }
+          
+          const imgElement = mediaCard.querySelector("img");
+          imgElement.src = imgUrl;
+          imgElement.alt = data.title;
+        }
+        else if (data.media_type === "video") {
+          if (existingMedia.tagName === "IMG") {
+            const iframe = document.createElement("iframe");
+            existingMedia.replaceWith(iframe);
+          }
+          
+          const frame = mediaCard.querySelector("iframe");
+          frame.src = data.url;
+          frame.width = "100%";
+          frame.height = "500";
+          frame.setAttribute("frameborder", "0");
+          frame.setAttribute("allowfullscreen", "true");
+        }
+        
+        // Fill metadata
+        document.querySelector(".title").textContent = data.title;
+        document.querySelector(".date").textContent = "Date: " + data.date;
+        document.querySelector(".explain").textContent = data.explanation;
+        
+        // Add copyright if available
+        if (data.copyright) {
+          document.querySelector(".date").textContent += " | © " + data.copyright;
+        }
+        
+      } catch (error) {
+        console.error("Error fetching APOD:", error);
+        statusDiv.innerHTML = `<p class="error">Error loading APOD: ${error.message}</p>`;
+        mediaContainer.style.display = 'none';
+      }
+    }
+    
+    // Load today's APOD on page load
+    loadAPOD();
+  </script>
+</body>
+</html>

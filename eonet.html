@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EONET — Natural Events</title>
+  <link rel="stylesheet" href="css/galactic.css">
+</head>
+
+<body class="page eonet">
+  <div class="space-ambient">
+    <div class="earth"></div>
+    <div class="glow-orbit"></div>
+    <div class="clouds"></div>
+  </div>
+
+  <header class="mast">
+    <div class="logo">NASA Explorer</div>
+    <nav class="space-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="apod.html">APOD</a></li>
+        <li><a href="mars.html">Mars</a></li>
+        <!-- <li><a href="epic.html">EPIC</a></li> -->
+        <li><a href="neows.html">NeoWs</a></li>
+        <li><a href="donki.html">DONKI</a></li>
+        <li><a href="eonet.html" class="active">EONET</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="tech.html">Tech</a></li>
+        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
+      </ul>
+    </nav>
+  </header>
+
+  <main class="content">
+    <section class="panel">
+      <h2>Earth Observatory Natural Event Tracker (EONET)</h2>
+      <p class="desc">Live data from NASA EONET: Wildfires, storms, volcanic eruptions, floods, and more.</p>
+
+      <div id="events" class="events-grid">
+        <p class="loading">Loading events...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">EONET • Data: NASA API</footer>
+
+  <script>
+    const API_URL = "https://eonet.gsfc.nasa.gov/api/v3/events";
+    let offset = 0;
+    const limit = 20;
+    let loading = false;
+
+    async function loadEvents() {
+      if (loading) return;
+      loading = true;
+
+      const url = `${API_URL}?limit=${limit}&offset=${offset}&status=open`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        renderEvents(data.events);
+
+        offset += limit;
+      } catch (err) {
+        console.error("EONET error:", err);
+      }
+
+      loading = false;
+    }
+
+    function renderEvents(events) {
+      const grid = document.querySelector(".events-grid");
+
+      events.forEach(event => {
+        const card = document.createElement("article");
+        card.classList.add("event-card");
+
+        const title = event.title;
+        const start = event.geometry?.[0]?.date?.split("T")[0] ?? "Unknown";
+        const status = event.closed ? "Closed" : "Active";
+
+        card.innerHTML = `
+      <h4>${title}</h4>
+      <p>Start: ${start}</p>
+      <p>Status: ${status}</p>
+    `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Load first batch
+    loadEvents();
+
+    // Infinite scroll
+    window.addEventListener("scroll", () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
+        loadEvents();
+      }
+    });
+
+  </script>
+</body>
+
+</html>

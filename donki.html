@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DONKI — Solar Activity</title>
+  <link rel="stylesheet" href="css/galactic.css">
+</head>
+
+<body class="page donki">
+  <div class="space-ambient">
+    <div class="sun-flare"></div>
+    <div class="stars"></div>
+    <div class="glow-orbit"></div>
+  </div>
+  <header class="mast">
+    <div class="logo">NASA Explorer</div>
+    <nav class="space-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="apod.html">APOD</a></li>
+        <li><a href="mars.html">Mars</a></li>
+        <!-- <li><a href="epic.html">EPIC</a></li> -->
+        <li><a href="neows.html">NeoWs</a></li>
+        <li><a href="donki.html" class="active">DONKI</a></li>
+        <li><a href="eonet.html">EONET</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="tech.html">Tech</a></li>
+        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
+      </ul>
+    </nav>
+  </header>
+
+  <main class="content">
+    <section class="panel">
+      <h2>Space Weather Database (DONKI)</h2>
+      <p class="desc">Monitor solar events including Coronal Mass Ejections (CME), Solar Flares, Geomagnetic Storms, and
+        more from NASA's Space Weather Database.</p>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="event-type">Event Type:</label>
+          <select id="event-type">
+            <option value="CME">Coronal Mass Ejection (CME)</option>
+            <option value="GST">Geomagnetic Storm (GST)</option>
+            <option value="FLR">Solar Flare (FLR)</option>
+            <option value="SEP">Solar Energetic Particle (SEP)</option>
+            <option value="IPS">Interplanetary Shock (IPS)</option>
+            <option value="MPC">Magnetopause Crossing (MPC)</option>
+            <option value="RBE">Radiation Belt Enhancement (RBE)</option>
+            <option value="HSS">High Speed Stream (HSS)</option>
+            <option value="notifications">Notifications (All Types)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="start-date">Start Date:</label>
+          <input type="date" id="start-date">
+        </div>
+        <div class="control-group">
+          <label for="end-date">End Date:</label>
+          <input type="date" id="end-date" max="2025-11-14">
+        </div>
+        <button class="fetch-btn" onclick="loadDONKI()">Fetch Events</button>
+      </div>
+
+      <div id="status"></div>
+
+      <div class="events" id="events-container">
+        <!-- Events will be loaded here -->
+      </div>
+
+    </section>
+  </main>
+  <footer class="foot">DONKI • Data: NASA API</footer>
+
+  <script>
+    const API_KEY = "FdEbrFcvSp6ewQDpxTgaEDEIgNSDx6epfOIcJuAA";
+
+    // Set default dates (last 7 days)
+    const endDateInput = document.getElementById("end-date");
+    const startDateInput = document.getElementById("start-date");
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
+    endDateInput.value = today.toISOString().split('T')[0];
+    startDateInput.value = sevenDaysAgo.toISOString().split('T')[0];
+
+    async function loadDONKI() {
+      const eventType = document.getElementById("event-type").value;
+      const startDate = startDateInput.value;
+      const endDate = endDateInput.value;
+      const statusDiv = document.getElementById("status");
+      const eventsContainer = document.getElementById("events-container");
+
+      // Build URL based on event type
+      let url = `https://api.nasa.gov/DONKI/${eventType}?api_key=${API_KEY}`;
+      if (startDate) url += `&startDate=${startDate}`;
+      if (endDate) url += `&endDate=${endDate}`;
+
+      try {
+        statusDiv.innerHTML = '<p class="loading">Loading space weather events...</p>';
+        eventsContainer.innerHTML = '';
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("DONKI Data:", data);
+
+        statusDiv.innerHTML = '';
+
+        if (!data || data.length === 0) {
+          eventsContainer.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px;">No events found for the selected date range.</p>';
+          return;
+        }
+
+        // Display events based on type
+        eventsContainer.innerHTML = data.map(event => renderEvent(event, eventType)).join('');
+
+      } catch (error) {
+        console.error("Error fetching DONKI data:", error);
+        statusDiv.innerHTML = `<p class="error">Error loading space weather data: ${error.message}</p>`;
+        eventsContainer.innerHTML = '';
+      }
+    }
+
+    function renderEvent(event, type) {
+      let html = '<article class="event">';
+
+      switch (type) {
+        case 'CME':
+          html += `
+            <h4>🌊 Coronal Mass Ejection</h4>
+            <p><strong>Activity ID:</strong> ${event.activityID || 'N/A'}</p>
+            <p><strong>Start Time:</strong> ${event.startTime || 'N/A'}</p>
+            ${event.sourceLocation ? `<p><strong>Source:</strong> ${event.sourceLocation}</p>` : ''}
+            ${event.note ? `<p><strong>Note:</strong> ${event.note}</p>` : ''}
+            ${event.linkedEvents && event.linkedEvents.length > 0 ? `<p><strong>Linked Events:</strong> ${event.linkedEvents.length}</p>` : ''}
+          `;
+          break;
+
+        case 'GST':
+          html += `
+            <h4>🌍 Geomagnetic Storm</h4>
+            <p><strong>GST ID:</strong> ${event.gstID || 'N/A'}</p>
+            <p><strong>Start Time:</strong> ${event.startTime || 'N/A'}</p>
+            ${event.allKpIndex && event.allKpIndex.length > 0 ? `<p><strong>Max Kp Index:</strong> ${Math.max(...event.allKpIndex.map(k => k.kpIndex))}</p>` : ''}
+            ${event.linkedEvents && event.linkedEvents.length > 0 ? `<p><strong>Linked Events:</strong> ${event.linkedEvents.length}</p>` : ''}
+          `;
+          break;
+
+        case 'FLR':
+          html += `
+            <h4>☀️ Solar Flare</h4>
+            <p><strong>Flare ID:</strong> ${event.flrID || 'N/A'}</p>
+            <p><strong>Begin Time:</strong> ${event.beginTime || 'N/A'}</p>
+            <p><strong>Peak Time:</strong> ${event.peakTime || 'N/A'}</p>
+            <p><strong>End Time:</strong> ${event.endTime || 'N/A'}</p>
+            <p><strong>Class Type:</strong> ${event.classType || 'N/A'}</p>
+            ${event.sourceLocation ? `<p><strong>Source:</strong> ${event.sourceLocation}</p>` : ''}
+            ${event.linkedEvents && event.linkedEvents.length > 0 ? `<p><strong>Linked Events:</strong> ${event.linkedEvents.length}</p>` : ''}
+          `;
+          break;
+
+        case 'SEP':
+          html += `
+            <h4>⚡ Solar Energetic Particle</h4>
+            <p><strong>SEP ID:</strong> ${event.sepID || 'N/A'}</p>
+            <p><strong>Event Time:</strong> ${event.eventTime || 'N/A'}</p>
+            ${event.instruments && event.instruments.length > 0 ? `<p><strong>Instruments:</strong> ${event.instruments.map(i => i.displayName).join(', ')}</p>` : ''}
+            ${event.linkedEvents && event.linkedEvents.length > 0 ? `<p><strong>Linked Events:</strong> ${event.linkedEvents.length}</p>` : ''}
+          `;
+          break;
+
+        case 'IPS':
+          html += `
+            <h4>💥 Interplanetary Shock</h4>
+            <p><strong>Activity ID:</strong> ${event.activityID || 'N/A'}</p>
+            <p><strong>Event Time:</strong> ${event.eventTime || 'N/A'}</p>
+            <p><strong>Location:</strong> ${event.location || 'N/A'}</p>
+            ${event.catalog ? `<p><strong>Catalog:</strong> ${event.catalog}</p>` : ''}
+          `;
+          break;
+
+        case 'MPC':
+          html += `
+            <h4>🧲 Magnetopause Crossing</h4>
+            <p><strong>Event Time:</strong> ${event.eventTime || 'N/A'}</p>
+            ${event.instruments && event.instruments.length > 0 ? `<p><strong>Instruments:</strong> ${event.instruments.map(i => i.displayName).join(', ')}</p>` : ''}
+          `;
+          break;
+
+        case 'RBE':
+          html += `
+            <h4>🎯 Radiation Belt Enhancement</h4>
+            <p><strong>RBE ID:</strong> ${event.rbeID || 'N/A'}</p>
+            <p><strong>Event Time:</strong> ${event.eventTime || 'N/A'}</p>
+            ${event.instruments && event.instruments.length > 0 ? `<p><strong>Instruments:</strong> ${event.instruments.map(i => i.displayName).join(', ')}</p>` : ''}
+          `;
+          break;
+
+        case 'HSS':
+          html += `
+            <h4>💨 High Speed Stream</h4>
+            <p><strong>HSS ID:</strong> ${event.hssID || 'N/A'}</p>
+            <p><strong>Event Time:</strong> ${event.eventTime || 'N/A'}</p>
+            ${event.instruments && event.instruments.length > 0 ? `<p><strong>Instruments:</strong> ${event.instruments.map(i => i.displayName).join(', ')}</p>` : ''}
+          `;
+          break;
+
+        case 'notifications':
+          html += `
+            <h4>📢 ${event.messageType || 'Notification'}</h4>
+            <p><strong>Issue Time:</strong> ${event.messageIssueTime || 'N/A'}</p>
+            <p><strong>ID:</strong> ${event.messageID || 'N/A'}</p>
+            ${event.messageBody ? `<p><strong>Message:</strong> ${event.messageBody.substring(0, 200)}...</p>` : ''}
+          `;
+          break;
+
+        default:
+          html += `<p>${JSON.stringify(event).substring(0, 200)}...</p>`;
+      }
+
+      html += '</article>';
+      return html;
+    }
+
+    // Load initial data on page load
+    loadDONKI();
+  </script>
+</body>
+
+</html>

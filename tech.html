@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TechTransfer / Techport</title>
+  <link rel="stylesheet" href="css/galactic.css">
+</head>
+
+<body class="page tech">
+  <div class="space-ambient">
+    <div class="gridlines"></div>
+    <div class="stars"></div>
+    <div class="glow-orbit"></div>
+  </div>
+  <header class="mast">
+    <div class="logo">NASA Explorer</div>
+    <nav class="space-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="apod.html">APOD</a></li>
+        <li><a href="mars.html">Mars</a></li>
+        <!-- <li><a href="epic.html">EPIC</a></li> -->
+        <li><a href="neows.html">NeoWs</a></li>
+        <li><a href="donki.html">DONKI</a></li>
+        <li><a href="eonet.html">EONET</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="tech.html" class="active">Tech</a></li>
+        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
+      </ul>
+    </nav>
+  </header>
+
+  <main class="content">
+    <section class="panel">
+      <h2>TechTransfer & Techport</h2>
+      <p class="desc">Search NASA patents, software, or spinoffs.</p>
+
+      <div class="search-row">
+        <input id="search-input" placeholder="Search..." aria-label="Search">
+        <select id="search-type">
+          <option value="patent">Patent</option>
+          <option value="software">Software</option>
+          <option value="spinoff">Spinoff</option>
+        </select>
+        <button id="search-btn">Search</button>
+      </div>
+
+      <div id="status" class="status"></div>
+      <div id="tech-cards" class="cards"></div>
+    </section>
+  </main>
+  <footer class="foot">TechTransfer • Data: NASA</footer>
+
+  <script>
+    const API_BASE = "https://technology.nasa.gov/api/api";
+    const searchBtn = document.getElementById("search-btn");
+    const searchInput = document.getElementById("search-input");
+    const searchType = document.getElementById("search-type");
+    const techCards = document.getElementById("tech-cards");
+    const statusDiv = document.getElementById("status");
+
+    let currentResults = [];
+    let currentPage = 1;
+    const pageSize = 5;
+
+    async function fetchTech() {
+      const query = searchInput.value.trim();
+      const type = searchType.value;
+
+      if (!query) {
+        statusDiv.textContent = "Please enter a search keyword.";
+        return;
+      }
+
+      statusDiv.textContent = "Loading...";
+      techCards.innerHTML = "";
+      currentResults = [];
+      currentPage = 1;
+
+      try {
+        // Use AllOrigins proxy to bypass CORS
+        const proxy = "https://api.allorigins.win/raw?url=";
+        const url = `${proxy}${encodeURIComponent(`${API_BASE}/${type}/${encodeURIComponent(query)}`)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (!data.results || data.results.length === 0) {
+          statusDiv.textContent = "No results found.";
+          return;
+        }
+
+        currentResults = data.results;
+        statusDiv.textContent = `Found ${data.count} results.`;
+        renderPage();
+      } catch (err) {
+        console.error(err);
+        statusDiv.textContent = `Error loading data: ${err.message}`;
+      }
+    }
+
+    function renderPage() {
+      techCards.innerHTML = "";
+
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageItems = currentResults.slice(start, end);
+
+      pageItems.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "tech-card";
+        const title = item[1] || "No Title";
+        const id = item[0] || "Unknown ID";
+        const summary = item[2] || item[3] || "No summary available";
+        // const url = item[4] ? `https://technology.nasa.gov/${item[4]}` : "#";
+
+        card.innerHTML = `
+      <h4>${title}</h4>
+      <p>ID: ${id}</p>
+      <p>${summary}</p>
+    `;
+        techCards.appendChild(card);
+      });
+
+      renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+      let controls = document.getElementById("pagination-controls");
+      if (!controls) {
+        controls = document.createElement("div");
+        controls.id = "pagination-controls";
+        controls.style.display = "flex";
+        controls.style.justifyContent = "center";
+        controls.style.gap = "10px";
+        controls.style.marginTop = "15px";
+        techCards.parentNode.appendChild(controls);
+      }
+
+      controls.innerHTML = "";
+      const totalPages = Math.ceil(currentResults.length / pageSize);
+
+      const prevBtn = document.createElement("button");
+      prevBtn.textContent = "Previous";
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => { currentPage--; renderPage(); };
+      controls.appendChild(prevBtn);
+
+      const pageIndicator = document.createElement("span");
+      pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+      pageIndicator.style.color = "#0ff";
+      controls.appendChild(pageIndicator);
+
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = "Next";
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => { currentPage++; renderPage(); };
+      controls.appendChild(nextBtn);
+    }
+
+    searchBtn.addEventListener("click", fetchTech);
+    searchInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") fetchTech();
+    });
+  </script>
+
+
+
+</body>
+
+</html>
