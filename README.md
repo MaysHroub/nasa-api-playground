@@ -1,11 +1,16 @@
-# 🌌 NASA Explorer (RESTful)
+#  NASA Explorer (RESTful)
+
+<p align="center">
+  <img src="nasa" width="1254">
+</p>
+
 
 ## Group Members
 
 | Name                | Student ID |
 | ------------------- | ---------- |
-| Bailasan Qadan      | *1220687*  |
-| Mays Al-reem Hroup  | *1220081*  |
+| Bailasan Qadan      | 1220687    |
+| Mays Al-reem Hroup  | 1220081    |
 
 
 ##  Project Overview
