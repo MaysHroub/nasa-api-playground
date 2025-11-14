@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>NASA Explorer — Mission Control</title>
   <link rel="stylesheet" href="css/galactic.css">
+  <link rel="stylesheet" href="css/enhanced-cards.css">
 </head>
 
 <body class="page index">
@@ -22,13 +23,11 @@
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="apod.html">APOD</a></li>
         <li><a href="mars.html">Mars Rover</a></li>
-        <!-- <li><a href="epic.html">EPIC</a></li> -->
         <li><a href="neows.html">NeoWs</a></li>
         <li><a href="donki.html">DONKI</a></li>
         <li><a href="eonet.html">EONET</a></li>
         <li><a href="library.html">Image Library</a></li>
         <li><a href="tech.html">TechTransfer</a></li>
-        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
       </ul>
     </nav>
   </header>
@@ -39,16 +38,57 @@
       <p>Browse authentic NASA datasets and media — beautifully designed pages for each public API. Click any tile to
         enter the data page.</p>
       <div class="tiles">
-        <a class="tile" href="apod.html">Astronomy Picture<br>of the Day</a>
-        <a class="tile" href="mars.html">Mars Rover<br>Photos</a>
-        <!-- <a class="tile" href="epic.html">EPIC — Earth<br>Imagery</a> -->
-        <a class="tile" href="neows.html">Near-Earth<br>Objects</a>
-        <a class="tile" href="donki.html">Solar<br>Activity</a>
-        <a class="tile" href="eonet.html">Natural<br>Events (EONET)</a>
-        <a class="tile" href="library.html">Image<br>Library</a>
-        <a class="tile" href="tech.html">Tech<br>Transfer</a>
-        <!-- <a class="tile" href="exoplanets.html">Exo‑planets</a> -->
-
+        <a class="tile enhanced-tile" href="apod.html">
+          <div class="tile-icon apod-icon"></div>
+          <div class="tile-content">
+            <h3>Astronomy Picture of the Day</h3>
+            <p>Discover the cosmos through daily stunning imagery</p>
+          </div>
+        </a>
+        <a class="tile enhanced-tile" href="mars.html">
+          <div class="tile-icon mars-icon"></div>
+          <div class="tile-content">
+            <h3>Mars Rover Photos</h3>
+            <p>Explore the red planet through rover cameras</p>
+          </div>
+        </a>
+        <a class="tile enhanced-tile" href="neows.html">
+          <div class="tile-icon neo-icon"></div>
+          <div class="tile-content">
+            <h3>Near-Earth Objects</h3>
+            <p>Track asteroids and comets in Earth's vicinity</p>
+          </div>
+        </a>
+        <a class="tile enhanced-tile" href="donki.html">
+          <div class="tile-icon solar-icon"></div>
+          <div class="tile-content">
+            <h3>Solar Activity</h3>
+            <p>Monitor space weather and solar events</p>
+          </div>
+        </a>
+        <a class="tile enhanced-tile" href="eonet.html">
+          <div class="tile-icon earth-icon"></div>
+          <div class="tile-content">
+            <h3>Natural Events</h3>
+            <p>Track natural phenomena across the globe</p>
+          </div>
+        </a>
+        <a class="tile enhanced-tile" href="library.html">
+          <div class="tile-icon library-icon"></div>
+          <div class="tile-content">
+            <h3>Image Library</h3>
+            <p>Browse NASA's vast collection of media</p>
+          </div>
+        </a>
+        <a class="tile enhanced-tile" href="tech.html">
+          <div class="tile-icon tech-icon"></div>
+          <div class="tile-content">
+            <h3>Tech Transfer</h3>
+            <p>Explore NASA innovations for everyday use</p>
+          </div>
+        </a>
+      </div>
+    </div>
   </main>
 
   <footer class="foot">© NASA Explorer — UI prototype. Backgrounds load from NASA public assets.</footer>

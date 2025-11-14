@@ -22,13 +22,11 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="apod.html">APOD</a></li>
         <li><a href="mars.html">Mars</a></li>
-        <!-- <li><a href="epic.html">EPIC</a></li> -->
         <li><a href="neows.html">NeoWs</a></li>
         <li><a href="donki.html">DONKI</a></li>
         <li><a href="eonet.html">EONET</a></li>
         <li><a href="library.html" class="active">Library</a></li>
         <li><a href="tech.html">Tech</a></li>
-        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
       </ul>
     </nav>
   </header>
@@ -69,7 +67,6 @@
           return;
         }
 
-        // Render results
         resultsGrid.innerHTML = items.map(item => {
           const title = item.data[0].title;
           const description = item.data[0].description || '';

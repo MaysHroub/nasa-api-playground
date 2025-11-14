@@ -823,3 +823,184 @@ select {
   border-color: #00ffcc;
   box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
 }
+
+/* Enhanced Card Styling for NASA Explorer */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.enhanced-tile {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 280px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  color: white;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.enhanced-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255,95,168,0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.enhanced-tile:hover::before {
+  opacity: 1;
+}
+
+.enhanced-tile:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(255,95,168,0.25), 0 0 0 1px rgba(122,231,255,0.3);
+  border-color: rgba(122,231,255,0.4);
+}
+
+/* Tile Icon Container */
+.tile-icon {
+  width: 100%;
+  height: 140px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(122,231,255,0.15) 0%, rgba(255,95,168,0.1) 100%);
+  transition: all 0.4s ease;
+}
+
+.enhanced-tile:hover .tile-icon {
+  background: linear-gradient(180deg, rgba(122,231,255,0.25) 0%, rgba(255,95,168,0.2) 100%);
+}
+
+/* Icon Styles - Using CSS shapes and gradients */
+.tile-icon::after {
+  content: '';
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(122,231,255,0.6) 100%);
+  border-radius: 50%;
+  box-shadow: 0 8px 40px rgba(122,231,255,0.4);
+  transition: all 0.4s ease;
+}
+
+.enhanced-tile:hover .tile-icon::after {
+  transform: scale(1.15) rotate(180deg);
+  box-shadow: 0 12px 60px rgba(255,95,168,0.6);
+}
+
+/* Specific icon variations */
+.apod-icon::after {
+  background: radial-gradient(circle, #ffd700 20%, #ff6b9d 60%, #4a0080 100%);
+}
+
+.mars-icon::after {
+  background: radial-gradient(circle, #ff6b4a 30%, #ff4500 60%, #8b0000 100%);
+}
+
+.neo-icon::after {
+  background: radial-gradient(circle, #e0e0e0 30%, #b0b0b0 60%, #606060 100%);
+  box-shadow: 0 0 20px rgba(224,224,224,0.5), inset 0 0 20px rgba(0,0,0,0.3);
+}
+
+.solar-icon::after {
+  background: radial-gradient(circle, #fff5e6 0%, #ffcc00 40%, #ff6600 100%);
+  box-shadow: 0 0 40px rgba(255,204,0,0.8);
+}
+
+.earth-icon::after {
+  background: linear-gradient(135deg, #0066cc 0%, #00cc99 50%, #66cc00 100%);
+}
+
+.library-icon::after {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.tech-icon::after {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0055ff 100%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Tile Content */
+.tile-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.tile-content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--acc2);
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.enhanced-tile:hover .tile-content h3 {
+  color: white;
+}
+
+.tile-content p {
+  font-size: 14px;
+  margin: 0;
+  color: rgba(207,239,246,0.8);
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 900px) {
+  .tiles {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  
+  .enhanced-tile {
+    min-height: 240px;
+  }
+  
+  .tile-icon {
+    height: 110px;
+  }
+  
+  .tile-icon::after {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .tile-content {
+    padding: 18px;
+  }
+  
+  .tile-content h3 {
+    font-size: 18px;
+  }
+  
+  .tile-content p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+}

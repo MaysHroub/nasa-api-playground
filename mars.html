@@ -20,13 +20,11 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="apod.html">APOD</a></li>
         <li><a href="mars.html" class="active">Mars</a></li>
-        <!-- <li><a href="epic.html">EPIC</a></li> -->
         <li><a href="neows.html">NeoWs</a></li>
         <li><a href="donki.html">DONKI</a></li>
         <li><a href="eonet.html">EONET</a></li>
         <li><a href="library.html">Library</a></li>
         <li><a href="tech.html">Tech</a></li>
-        <!-- <li><a href="exoplanets.html">Exoplanets</a></li> -->
       </ul>
     </nav>
   </header>
@@ -55,7 +53,7 @@
   <footer class="foot">Mars Weather & Rover Photos • Data: NASA API</footer>
 
   <script>
-    const API_KEY = "FdEbrFcvSp6ewQDpxTgaEDEIgNSDx6epfOIcJuAA"; // replace with your API key if you have one
+    const API_KEY = "FdEbrFcvSp6ewQDpxTgaEDEIgNSDx6epfOIcJuAA"; 
     const solSelect = document.getElementById("sol-select");
     const fetchBtn = document.getElementById("fetch-sol-btn");
     const statusDiv = document.getElementById("weather-status");
@@ -77,7 +75,6 @@
           solSelect.appendChild(option);
         });
 
-        // if (sols.length > 0) fetchWeather(sols[sols.length - 1]); // Load most recent sol by default
       } catch (err) {
         statusDiv.textContent = `Error loading Sols: ${err.message}`;
       }
@@ -114,7 +111,6 @@
       }
     }
 
-    // solSelect.addEventListener("change", () => fetchWeather(solSelect.value));
     fetchBtn.addEventListener("click", () => fetchWeather(solSelect.value));
 
     loadSols();
