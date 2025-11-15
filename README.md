@@ -1,6 +1,6 @@
 #  NASA Explorer (RESTful)
 
-<img width="1024" alt="image" src="nasa" />
+<img width="1024" alt="image" src="assignment1/nasa.png" />
 
 
 ## Group Members
