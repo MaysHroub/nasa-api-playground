@@ -62,12 +62,10 @@
   <script>
     const API_KEY = "FdEbrFcvSp6ewQDpxTgaEDEIgNSDx6epfOIcJuAA";
     
-    // Set today's date as default
     const dateInput = document.getElementById("apod-date");
     const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
     
-    // Add event listeners for better interaction
     dateInput.addEventListener('change', function() {
       console.log('Date changed to:', this.value);
     });
@@ -107,7 +105,6 @@
         statusDiv.innerHTML = '';
         mediaContainer.style.display = 'block';
         
-        // Handle media content
         const mediaCard = document.querySelector(".media-card");
         const existingMedia = mediaCard.querySelector("img, iframe");
         
@@ -137,12 +134,10 @@
           frame.setAttribute("allowfullscreen", "true");
         }
         
-        // Fill metadata
         document.querySelector(".title").textContent = data.title;
         document.querySelector(".date").textContent = "Date: " + data.date;
         document.querySelector(".explain").textContent = data.explanation;
         
-        // Add copyright if available
         if (data.copyright) {
           document.querySelector(".date").textContent += " | © " + data.copyright;
         }
